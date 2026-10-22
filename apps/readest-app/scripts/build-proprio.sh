@@ -27,5 +27,6 @@ echo "APK: $(realpath "$apk")"
 if [[ "${1:-}" == "--install" ]]; then
   ADB="${ADB:-/mnt/c/Users/mathe/AppData/Local/Microsoft/WinGet/Packages/Genymobile.scrcpy_Microsoft.Winget.Source_8wekyb3d8bbwe/scrcpy-win64-v4.1/adb.exe}"
   # adb.exe é do Windows: precisa de caminho Windows
-  "$ADB" install -r "$(wslpath -w "$apk")"
+  # ADB_SERIAL: escolhe o aparelho quando o adb lista mais de um (ex.: IP e mDNS)
+  "$ADB" ${ADB_SERIAL:+-s "$ADB_SERIAL"} install -r "$(wslpath -w "$apk")"
 fi
