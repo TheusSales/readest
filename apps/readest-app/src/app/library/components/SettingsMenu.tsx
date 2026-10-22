@@ -21,6 +21,7 @@ import { useTranslation } from '@/hooks/useTranslation';
 import { useCloudSyncStatus } from '@/hooks/useCloudSyncStatus';
 import { useResponsiveSize } from '@/hooks/useResponsiveSize';
 import { useTransferQueue } from '@/hooks/useTransferQueue';
+import { isSelfHosted } from '@/utils/access';
 import { navigateToLogin, navigateToProfile } from '@/utils/nav';
 import { tauriHandleSetAlwaysOnTop, tauriHandleToggleFullScreen } from '@/utils/window';
 import { setAboutDialogVisible } from '@/components/AboutWindow';
@@ -467,7 +468,7 @@ const SettingsMenu: React.FC<SettingsMenuProps> = ({ onPullLibrary, setIsDropdow
         </ul>
       </MenuItem>
       <hr aria-hidden='true' className='border-base-200 my-1' />
-      {user && userProfilePlan === 'free' && (
+      {user && userProfilePlan === 'free' && !isSelfHosted() && (
         <MenuItem label={_('Upgrade to Readest Premium')} onClick={handleUpgrade} />
       )}
       {isWebAppPlatform() && <MenuItem label={_('Download Readest')} onClick={downloadReadest} />}
