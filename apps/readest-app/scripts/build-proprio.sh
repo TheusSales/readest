@@ -9,6 +9,14 @@ export ANDROID_HOME="${ANDROID_HOME:-$HOME/android-sdk}"
 export NDK_HOME="${NDK_HOME:-$ANDROID_HOME/ndk/28.2.13676358}"
 export PATH="$HOME/.local/bin:$JAVA_HOME/bin:$PATH"
 
+# Como no CI (release.yml): gera o projeto Gradle completo e restaura os arquivos versionados
+if [[ ! -x src-tauri/gen/android/gradlew ]]; then
+  rm -rf src-tauri/gen/android
+  pnpm tauri android init
+  pnpm tauri icon ../../data/icons/readest-book.png
+  git checkout -- src-tauri/gen src-tauri/icons
+fi
+
 cp "$HOME/.android/readest-release.properties" src-tauri/gen/android/keystore.properties
 
 pnpm exec dotenv -e .env.proprio -e .env.tauri -- pnpm tauri android build -t aarch64 --apk
