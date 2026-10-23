@@ -112,9 +112,10 @@ Feito:
 
 Falta:
 
-- [ ] **OPDS do celular usa a conta `admin`** do Calibre-Web. Trocar para `user-odps`
-      quando a senha dela for encontrada (a senha testada foi recusada), ou redefinir essa
-      senha e atualizar também no X4 e no KOReader.
+- [ ] **OPDS nos aparelhos com a conta `user-odps`**: a senha foi redefinida em 23/10/2026
+      (OPDS responde 200) e a do `admin` já não é a padrão. Falta trocar no celular
+      (hoje usa `admin`), no X4 e no KOReader. Opcional: deixar o `user-odps` só com
+      `download` e `viewer`.
 - [ ] **Nome no lançador**: "Readest+" já está no código; falta compilar, publicar a release
       (incrementar `proprioBuild`) e conferir no S25.
 - [ ] **Estatísticas do X4**: o CrossInk não roda o plugin CrossPoint do Readest.
@@ -136,6 +137,8 @@ Falta:
   vezes (IP e mDNS), passe `ADB_SERIAL`.
 - **Automação por adb**: confira se o app está em primeiro plano antes de cada toque.
   Notificações e o Bitwarden roubam o foco no meio do caminho.
+- **Senha de usuário do Calibre-Web pela linha de comando** (sem reiniciar):
+  `docker exec reading-calibre-web /lsiopy/bin/python3 /app/calibre-web/cps.py -p /config/app.db -s 'usuario:senha'`.
 - **Hash do kosync**: o livro só compartilha posição se for o mesmo arquivo nos dois
   aparelhos. Baixe sempre pelo OPDS. `reading-stack/tools/kosync-scan.py` lista quais
   livros da biblioteca têm posição no kosync.
