@@ -50,8 +50,12 @@ android {
         applicationId = "com.matheus.readest"
         minSdk = 26
         targetSdk = 36
-        versionCode = tauriProperties.getProperty("tauri.android.versionCode", "1").toInt()
-        versionName = tauriProperties.getProperty("tauri.android.versionName", "1.0")
+        // Build próprio: código do upstream × 100 + build nosso, para cada release
+        // (Obtainium) subir o versionCode mesmo sem versão nova do upstream.
+        // Incremente proprioBuild a cada release; volte a 1 quando o upstream mudar de versão.
+        val proprioBuild = 1
+        versionCode = tauriProperties.getProperty("tauri.android.versionCode", "1").toInt() * 100 + proprioBuild
+        versionName = tauriProperties.getProperty("tauri.android.versionName", "1.0") + "-p" + proprioBuild
         val storeFlavor = project.findProperty("storeFlavor")?.toString() ?: "foss"
         missingDimensionStrategy("store", storeFlavor)
         // Handwriting (issue #3673): -PpenFlavor=booxPen links the BOOX Pen SDK

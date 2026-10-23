@@ -69,6 +69,21 @@ A primeira compilação leva uns 15 minutos (Rust); as seguintes, poucos minutos
 Os testes do upstream continuam valendo: `pnpm test`, `pnpm lint` e, para o plugin,
 `pnpm test:lua` (LuaJIT + busted).
 
+### Publicar uma release (Obtainium)
+
+O celular atualiza pelo Obtainium a partir das releases deste fork.
+
+1. Em `apps/readest-app/src-tauri/gen/android/app/build.gradle.kts`, incremente
+   `proprioBuild`. Volte a `1` quando trocar de versão do upstream.
+   `versionCode` = código do upstream × 100 + `proprioBuild`; `versionName` = `<versão>-p<build>`.
+2. Rode `scripts/build-proprio.sh` e confirme com
+   `aapt2 dump badging <apk> | head -1` (pacote, `versionCode` e `versionName`).
+3. `gh release create v<versão>-p<build> <apk renomeado> -R TheusSales/readest --target proprio`.
+   A tag precisa ser igual ao `versionName` com `v` na frente, para o Obtainium casar a versão.
+
+No Obtainium, adicione o app pela URL do fork, `https://github.com/TheusSales/readest`,
+e não pela do upstream: só o fork tem os APKs `com.matheus.readest` com esta assinatura.
+
 ### Plugin do KOReader
 
 Empacote como o CI (`.github/workflows/release.yml`, passo do koplugin): copie
@@ -83,6 +98,7 @@ ele baixa a versão oficial por cima da modificada.
 Feito:
 
 - [x] Fork, APK próprio assinado e instalado no S25. O Readest oficial foi removido.
+- [x] Releases no fork para o Obtainium (primeira: `v0.12.16-p1`).
 - [x] Servidor Readest no VPS (`reading-stack/readest`), com conta criada e cadastro fechado (`DISABLE_SIGNUP=true`).
 - [x] App configurado: OPDS "Calibre", kosync (`matheus`, método "Conteúdo do arquivo",
       estratégia "Perguntar em caso de conflito", aparelho "S25") e categoria
@@ -98,8 +114,6 @@ Falta:
       quando a senha dela for encontrada (a senha testada foi recusada), ou redefinir essa
       senha e atualizar também no X4 e no KOReader.
 - [ ] **Nome no lançador**: ainda aparece "Readest", igual ao oficial.
-- [ ] **Releases para o Obtainium**, como no xm6: `versionCode` crescente e
-      `gh release create` com o APK assinado.
 - [ ] **Estatísticas do X4**: o CrossInk não roda o plugin CrossPoint do Readest.
       Investigar se ele grava algum registro de leitura no SD que dê para importar.
 - [ ] Testar a posição saindo do celular para o X4 e para o Kindle (até agora só foi
