@@ -80,12 +80,12 @@ describe("Readest Cloud URL", function()
         return plugin.settings.supabase_url
     end
 
-    it("uses the project URL for a new installation", function()
-        assert.are.equal("https://vbsyxfusjjqdxkjqlysc.supabase.co", init())
+    it("uses the self-hosted server URL for a new installation", function()
+        assert.are.equal("https://readest.pulsobot.duckdns.org", init())
     end)
 
     it("moves saved settings off the former vanity host", function()
-        assert.are.equal("https://vbsyxfusjjqdxkjqlysc.supabase.co",
+        assert.are.equal("https://readest.pulsobot.duckdns.org",
             init({ supabase_url = "https://readest.supabase.co" }))
     end)
 

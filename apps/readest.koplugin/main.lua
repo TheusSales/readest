@@ -36,12 +36,15 @@ local BACKGROUND_PULL_DELAY = 1
 local function wifiEnableAction()
     return G_reader_settings:readSetting("wifi_enable_action") or "prompt"
 end
-local SUPABAE_ANON_KEY_BASE64 = "ZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SnBjM01pT2lKemRYQmhZbUZ6WlNJc0luSmxaaUk2SW5aaWMzbDRablZ6YW1weFpIaHJhbkZzZVhOaklpd2ljbTlzWlNJNkltRnViMjRpTENKcFlYUWlPakUzTXpReE1qTTJOekVzSW1WNGNDSTZNakEwT1RZNU9UWTNNWDAuM1U1VXFhb3VfMVNnclZlMWVvOXJBcGMwdUtqcWhwUWRVWGh2d1VIbVVmZw=="
+-- Servidor self-hosted (reading-stack/readest): chave anônima pública, acesso protegido por RLS
+local SUPABAE_ANON_KEY_BASE64 = "ZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SnliMnhsSWpvaVlXNXZiaUlzSW1semN5STZJbk4xY0dGaVlYTmxJaXdpYVdGMElqb3hOemt5TnpFeE5qUTFMQ0psZUhBaU9qSXhNRGd3TnpFMk5EVjkuakM3U1FMeHVoaVJJUnIzOW0zZ1RmaWh5anRmXzRnRXQxMWdNSmNSMTJqNA=="
 
 ReadestSync.default_settings = {
-    supabase_url = "https://vbsyxfusjjqdxkjqlysc.supabase.co",
+    supabase_url = "https://readest.pulsobot.duckdns.org",
     supabase_anon_key = sha2.base64_to_bin(SUPABAE_ANON_KEY_BASE64),
     auto_sync = false,
+    -- Só estatísticas ao fechar o livro: a posição fica com o kosync.
+    auto_sync_stats = true,
     user_email = nil,
     user_name = nil,
     user_id = nil,
@@ -561,6 +564,14 @@ function ReadestSync:addToMainMenu(menu_items)
                 checked_func = function() return self.settings.auto_sync end,
                 callback = function()
                     self:onReadestSyncToggleAutoSync()
+                end,
+            },
+            {
+                text = _("Auto sync reading stats only"),
+                enabled_func = function() return not self.settings.auto_sync end,
+                checked_func = function() return self.settings.auto_sync or self.settings.auto_sync_stats end,
+                callback = function()
+                    self.settings.auto_sync_stats = not self.settings.auto_sync_stats
                 end,
             },
             {
@@ -1112,14 +1123,23 @@ function ReadestSync:pushOpenBook(interactive)
 end
 
 function ReadestSync:onCloseDocument()
-    if not (self.settings.auto_sync and self.settings.access_token) then
+    if not self.settings.access_token then
         return
     end
-    local function push()
-        self:pushBookConfig(false, true)
-        self:pushBookNotes(false)
-        self:pushBookStats(false)
-        self:pushOpenBook(false)
+    local push
+    if self.settings.auto_sync then
+        push = function()
+            self:pushBookConfig(false, true)
+            self:pushBookNotes(false)
+            self:pushBookStats(false)
+            self:pushOpenBook(false)
+        end
+    elseif self.settings.auto_sync_stats then
+        push = function()
+            self:pushBookStats(false)
+        end
+    else
+        return
     end
     -- The push needs the document, so it cannot be deferred: with "turn on"
     -- let KOReader bring Wi-Fi up (blocking) as it always did. With anything

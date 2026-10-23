@@ -28,6 +28,7 @@ describe("ReadestSync:onCloseDocument", function()
         local plugin = setmetatable({
             settings = {
                 auto_sync = opts.auto_sync,
+                auto_sync_stats = opts.auto_sync_stats,
                 access_token = opts.access_token,
                 user_id = "u1",
             },
@@ -99,6 +100,31 @@ describe("ReadestSync:onCloseDocument", function()
 
     it("does nothing when signed out", function()
         local plugin = makePlugin({ auto_sync = true, access_token = nil })
+        plugin:onCloseDocument()
+        assert.are.equal(0, #plugin.calls)
+    end)
+
+    -- Stats-only mode: reading position stays with another sync (kosync), so
+    -- closing a book pushes reading statistics and nothing else.
+    it("pushes only stats when auto sync is off and stats sync is on", function()
+        local plugin = makePlugin({ auto_sync = false, auto_sync_stats = true, access_token = "tok" })
+        plugin:onCloseDocument()
+
+        local by = called(plugin)
+        assert.are.equal(1, #plugin.calls)
+        assert.truthy(by.pushBookStats)
+        assert.is_false(by.pushBookStats.arg1)  -- non-interactive
+    end)
+
+    it("skips the stats-only push when offline", function()
+        local plugin = makePlugin({ auto_sync = false, auto_sync_stats = true, access_token = "tok" })
+        stubs.NetworkMgr._online = false
+        plugin:onCloseDocument()
+        assert.are.equal(0, #plugin.calls)
+    end)
+
+    it("does not push stats-only when signed out", function()
+        local plugin = makePlugin({ auto_sync = false, auto_sync_stats = true, access_token = nil })
         plugin:onCloseDocument()
         assert.are.equal(0, #plugin.calls)
     end)
