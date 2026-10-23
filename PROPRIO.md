@@ -31,6 +31,8 @@ Veja `git log v0.12.16..proprio`. Em resumo:
    `NEXT_PUBLIC_SELF_HOSTED=true` (chave oficial do upstream que libera todas as funções
    premium), URLs e chave anônima do servidor, sem PostHog e sem Sentry.
    `applicationId` = `com.matheus.readest`. O namespace Kotlin continua `com.bilingify.readest`.
+   Nome no lançador: **Readest+**, em `src-tauri/gen/android/app/src/release/res/values/strings.xml`
+   (o source set release sobrepõe o `strings.xml` gerado pelo `tauri android init`).
 2. **Tela da conta** (`src/utils/access.ts`, `SettingsMenu.tsx`): as cotas fixas
    da build (`NEXT_PUBLIC_*_FIXED_QUOTA`) passam a valer no cliente, e o menu deixa de
    oferecer "Atualizar para Premium" quando a build é self-hosted. O selo "Plano gratuito"
@@ -113,7 +115,8 @@ Falta:
 - [ ] **OPDS do celular usa a conta `admin`** do Calibre-Web. Trocar para `user-odps`
       quando a senha dela for encontrada (a senha testada foi recusada), ou redefinir essa
       senha e atualizar também no X4 e no KOReader.
-- [ ] **Nome no lançador**: ainda aparece "Readest", igual ao oficial.
+- [ ] **Nome no lançador**: "Readest+" já está no código; falta compilar, publicar a release
+      (incrementar `proprioBuild`) e conferir no S25.
 - [ ] **Estatísticas do X4**: o CrossInk não roda o plugin CrossPoint do Readest.
       Investigar se ele grava algum registro de leitura no SD que dê para importar.
 - [ ] Testar a posição saindo do celular para o X4 e para o Kindle (até agora só foi

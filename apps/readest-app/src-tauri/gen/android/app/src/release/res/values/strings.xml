@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Build próprio: nome no lançador e na tela de recentes, distinto do Readest oficial.
+     O res/values/strings.xml do main é gerado pelo `tauri android init` (productName);
+     o source set release tem prioridade sobre o main, então este arquivo vence sem conflito. -->
+<resources>
+    <string name="app_name">Readest+</string>
+    <string name="main_activity_title">Readest+</string>
+</resources>
