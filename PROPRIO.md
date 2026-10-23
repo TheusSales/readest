@@ -118,8 +118,11 @@ Falta:
       `download` e `viewer`.
 - [ ] **Nome no lançador**: "Readest+" já está no código; falta compilar, publicar a release
       (incrementar `proprioBuild`) e conferir no S25.
-- [ ] **Estatísticas do X4**: o CrossInk não roda o plugin CrossPoint do Readest.
-      Investigar se ele grava algum registro de leitura no SD que dê para importar.
+- [ ] **Estatísticas do X4**: ponte `reading-stack/x4-stats` pronta (no GitHub, ainda sem
+      deploy). O CrossInk só guarda totais (`/.crosspoint/global_stats.bin`, `stats_v5.bin`
+      por livro e contadores diários em `/.crosspoint/daily_reading`) e os envia por
+      `/api/v1/stats/*` ao servidor do KOReader Sync **só no ramo `development`** (a v1.6.1
+      não envia). Falta: deploy (Caddy + `link`), firmware `development` no X4 e um teste.
 - [ ] Testar a posição saindo do celular para o X4 e para o Kindle (até agora só foi
       verificada no servidor).
 - [ ] Atualizar o upstream: `git fetch upstream --tags`, rebase do `proprio` na nova tag,
